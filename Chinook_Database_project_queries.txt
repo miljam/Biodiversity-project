@@ -1,0 +1,60 @@
+Chinook Database project
+
+/Query1 - What is most represented genre?/
+SELECT Genre.Name, COUNT(Track.TrackId) Most_Represented
+FROM Track
+JOIN Genre
+ON Track.GenreId = Genre.GenreId
+GROUP BY Genre.Name
+ORDER BY COUNT(Track.TrackId) DESC
+LIMIT 10;
+
+/Query2 - Most sold track name/
+SELECT t.Name Track_Name, a.Name Artist_Name, ROUND(SUM(il.UnitPrice * il.Quantity),2) Total_Sold
+FROM Invoice i
+JOIN InvoiceLine il
+ON i.InvoiceId = il.InvoiceId
+JOIN Track t
+ON il.TrackId = t.TrackId
+JOIN Album al
+ON t.AlbumId = al.AlbumId
+JOIN Artist a
+ON al.ArtistId = a.ArtistId
+GROUP BY t.Name
+ORDER BY SUM(il.UnitPrice * Quantity) DESC
+LIMIT 1;
+
+/Query3 - Most popular/sold genre/
+SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity),2) Most_sold
+FROM InvoiceLine il
+JOIN Track t
+ON il.TrackId = t.TrackId
+JOIN Genre g
+ON t.GenreId = g.GenreId
+GROUP BY g.Name
+ORDER BY SUM(il.UnitPrice * Quantity) DESC
+LIMIT 10;
+
+/Query4 - Which album are most tracks sold?/
+SELECT al.Title Album_Name, COUNT(il.TrackId) Sold_Tracks
+FROM Invoice i
+JOIN InvoiceLine il
+ON i.InvoiceId = il.InvoiceId
+JOIN Track t
+ON il.TrackId = t.TrackId
+JOIN Album al
+ON t.AlbumId = al.AlbumId
+GROUP BY al.Title
+ORDER BY COUNT(il.TrackId)DESC
+LIMIT 10;
+
+/Query5 - How many tracks are sold every year?/
+SELECT strftime('%Y', Invoice.InvoiceDate) Year, COUNT(InvoiceLine.TrackId) Tracks
+FROM Invoice
+JOIN InvoiceLine
+ON Invoice.InvoiceId = InvoiceLine.InvoiceId
+GROUP BY 1
+ORDER BY 2;
+
+
+
